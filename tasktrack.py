@@ -7,7 +7,7 @@ Course: CPS 310
 
 def display_menu():
     """Display the available TaskTrack menu options."""
-    print("\nTaskTrack")
+    print("\nTaskTrack Menu")
     print("1. View tasks")
     print("2. Add task")
     print("3. Exit")
