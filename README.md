@@ -63,3 +63,6 @@ Task added successfully.
 ## Limitations and Planned Improvements
 
 TaskTrack currently uses a simple text file for storage and provides only basic task management features. Planned improvements could include allowing users to delete or edit tasks, marking tasks as complete, and providing more advanced task organization.
+## Version Control
+
+TaskTrack uses Git to keep track of changes to the project. A commit records a set of changes in the local Git repository with a message describing what was changed. A push sends local commits to the GitHub repository so the changes are stored remotely. A pull downloads and integrates changes from the GitHub repository into the local working copy. This workflow makes it possible to keep different copies of the project synchronized.
