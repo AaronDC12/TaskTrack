@@ -12,14 +12,18 @@ def display_menu():
     print("3. Exit")
 def add_task(tasks):
     """Prompt the user for a task and add it to the task list."""
-    task = input("Enter a new task: ")
+    task = input("Enter a new task: ").strip()
+
+    if not task:
+        print("A task cannot be empty.")
+        return
+
     tasks.append(task)
 
     with open(TASKS_FILE, "a") as file:
         file.write(task + "\n")
 
     print("Task added successfully.")
-
 def view_tasks(tasks):
     """Display all tasks currently stored in the task list."""
     if not tasks:
