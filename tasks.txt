@@ -1,6 +1,3 @@
-Complete ICA04
-Review GitHub commands
-Update the TaskTrack README
-Test persistent storage
-Test input validation
-Final test task
+Finish CPS 310 assignment
+Review Python code
+Study for computer architecture
