@@ -46,28 +46,37 @@ def remove_task(tasks):
         print("No tasks are available to remove.")
         return False
 
-    view_tasks(tasks)
-    selection = input("Enter the number of the task to remove: ").strip()
+    while True:
+        view_tasks(tasks)
+        selection = input(
+            "Enter the number of the task to remove, or 0 to return to menu: "
+        ).strip()
 
-    # Reject input that is not numeric.
-    if not selection.isdigit():
-        print("Please enter a valid task number.")
-        return False
+        # Allow the user to return to the menu.
+        if selection == "0":
+            print("Returning to menu.")
+            return False
 
-    task_number = int(selection)
+        # Reject input that is not numeric.
+        if not selection.isdigit():
+            print("Please enter a valid task number.")
+            continue
 
-    # Reject numbers outside the valid task range.
-    if task_number < 1 or task_number > len(tasks):
-        print("That task number does not exist.")
-        return False
+        task_number = int(selection)
 
-    # Remove the selected task.
-    removed_task = tasks.pop(task_number - 1)
+        # Reject numbers outside the valid task range.
+        if task_number < 1 or task_number > len(tasks):
+            print("That task number does not exist.")
+            continue
 
-    # Display confirmation.
-    print(f"Task removed successfully: {removed_task}")
+        # Remove the selected task.
+        removed_task = tasks.pop(task_number - 1)
 
-    return True
+        # Display confirmation.
+        print(f"Task removed successfully: {removed_task}")
+
+        return True
+
 
 def save_tasks(tasks, filename):
     """Save all tasks to a text file."""
@@ -91,7 +100,6 @@ def load_tasks(filename):
         return []
 
     return tasks
-
 
 
 def main():
