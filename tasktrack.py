@@ -11,8 +11,8 @@ def display_menu():
     """Display the available TaskTrack menu options."""
     print("\n1. View tasks")
     print("2. Add task")
-    print("3. Exit")
-
+    print("3. Remove task")
+    print("4. Exit")
 
 def add_task(tasks):
     """Prompt the user for a task and add it to the task list."""
@@ -37,6 +37,37 @@ def view_tasks(tasks):
     for number, task in enumerate(tasks, start=1):
         print(f"{number}. {task}")
 
+def remove_task(tasks):
+    """Prompt the user to select and remove a task.
+
+    Return True when a task is removed and False otherwise.
+    """
+    if not tasks:
+        print("No tasks are available to remove.")
+        return False
+
+    view_tasks(tasks)
+    selection = input("Enter the number of the task to remove: ").strip()
+
+    # Reject input that is not numeric.
+    if not selection.isdigit():
+        print("Please enter a valid task number.")
+        return False
+
+    task_number = int(selection)
+
+    # Reject numbers outside the valid task range.
+    if task_number < 1 or task_number > len(tasks):
+        print("That task number does not exist.")
+        return False
+
+    # Remove the selected task.
+    removed_task = tasks.pop(task_number - 1)
+
+    # Display confirmation.
+    print(f"Task removed successfully: {removed_task}")
+
+    return True
 
 def save_tasks(tasks, filename):
     """Save all tasks to a text file."""
@@ -62,6 +93,7 @@ def load_tasks(filename):
     return tasks
 
 
+
 def main():
     """Run the TaskTrack menu until the user chooses to exit."""
     tasks = load_tasks(TASKS_FILE)
@@ -76,11 +108,12 @@ def main():
             add_task(tasks)
             save_tasks(tasks, TASKS_FILE)
         elif choice == "3":
+            if remove_task(tasks):
+                save_tasks(tasks, TASKS_FILE)
+        elif choice == "4":
             print("Goodbye!")
             break
         else:
-            print("Please enter 1, 2, or 3.")
-
-
+            print("Please enter 1, 2, 3, or 4.")
 if __name__ == "__main__":
     main()
