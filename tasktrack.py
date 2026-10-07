@@ -14,6 +14,7 @@ def display_menu():
     print("3. Remove task")
     print("4. Exit")
 
+
 def add_task(tasks):
     """Prompt the user for a task and add it to the task list."""
     task = input("Enter a new task: ").strip()
@@ -36,6 +37,15 @@ def view_tasks(tasks):
 
     for number, task in enumerate(tasks, start=1):
         print(f"{number}. {task}")
+
+
+def remove_task_by_number(tasks, task_number):
+    """Remove a task by its displayed number and return the removed task."""
+    if task_number < 1 or task_number > len(tasks):
+        return None
+
+    return tasks.pop(task_number - 1)
+
 
 def remove_task(tasks):
     """Prompt the user to select and remove a task.
@@ -64,13 +74,12 @@ def remove_task(tasks):
 
         task_number = int(selection)
 
-        # Reject numbers outside the valid task range.
-        if task_number < 1 or task_number > len(tasks):
+        # Remove the selected task using the helper function.
+        removed_task = remove_task_by_number(tasks, task_number)
+
+        if removed_task is None:
             print("That task number does not exist.")
             continue
-
-        # Remove the selected task.
-        removed_task = tasks.pop(task_number - 1)
 
         # Display confirmation.
         print(f"Task removed successfully: {removed_task}")
@@ -123,5 +132,7 @@ def main():
             break
         else:
             print("Please enter 1, 2, 3, or 4.")
+
+
 if __name__ == "__main__":
     main()
