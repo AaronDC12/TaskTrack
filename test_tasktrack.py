@@ -1,53 +1,124 @@
 import pytest
 
-from tasktrack import remove_task_by_number
+from tasktrack import load_tasks, remove_task_by_number, save_tasks
 
 
-def test_remove_first_task():
-    tasks = ["Task 1", "Task 2", "Task 3"]
+@pytest.fixture
+def sample_tasks():
+    return ["Study", "Exercise", "Shop"]
 
-    removed = remove_task_by_number(tasks, 1)
+def test_remove_first_task(sample_tasks):
+    # Arrange
+    tasks = sample_tasks
+    task_number = 1
+    expected_removed = "Study"
 
-    assert removed == "Task 1"
-    assert tasks == ["Task 2", "Task 3"]
+    # Act
+    result = remove_task_by_number(tasks, task_number)
+
+    # Assert
+    assert result == expected_removed
+    assert tasks == ["Exercise", "Shop"]
 
 
-def test_remove_middle_task():
-    tasks = ["Task 1", "Task 2", "Task 3"]
+def test_remove_middle_task(sample_tasks):
+    # Arrange
+    tasks = sample_tasks
+    task_number = 2
+    expected_removed = "Exercise"
 
-    removed = remove_task_by_number(tasks, 2)
+    # Act
+    result = remove_task_by_number(tasks, task_number)
 
-    assert removed == "Task 2"
-    assert tasks == ["Task 1", "Task 3"]
+    # Assert
+    assert result == expected_removed
+    assert tasks == ["Study", "Shop"]
 
-def test_remove_last_task():
-    tasks = ["Task 1", "Task 2", "Task 3"]
 
-    removed = remove_task_by_number(tasks, 3)
+def test_remove_last_task(sample_tasks):
+    # Arrange
+    tasks = sample_tasks
+    task_number = 3
+    expected_removed = "Shop"
 
-    assert removed == "Task 3"
-    assert tasks == ["Task 1", "Task 2"]
+    # Act
+    result = remove_task_by_number(tasks, task_number)
 
-def test_remove_zero():
-    tasks = ["Task 1", "Task 2", "Task 3"]
+    # Assert
+    assert result == expected_removed
+    assert tasks == ["Study", "Exercise"]
 
-    removed = remove_task_by_number(tasks, 0)
 
-    assert removed is None
-    assert tasks == ["Task 1", "Task 2", "Task 3"]
+@pytest.mark.parametrize(
+    "task_number",
+    [0, -1, 10],
+    ids=["zero", "negative_number", "number_too_large"],
+)
+def test_invalid_task_numbers_return_none(task_number):
+    # Arrange
+    tasks = ["Study", "Exercise", "Shop"]
 
-def test_remove_too_large_number():
-    tasks = ["Task 1", "Task 2", "Task 3"]
+    # Act
+    result = remove_task_by_number(tasks, task_number)
 
-    removed = remove_task_by_number(tasks, 4)
+    # Assert
+    assert result is None
+    assert tasks == ["Study", "Exercise", "Shop"]
 
-    assert removed is None
-    assert tasks == ["Task 1", "Task 2", "Task 3"]
+def test_save_tasks_writes_all_tasks(tmp_path):
+    # Arrange
+    test_file = tmp_path / "tasks.txt"
+    tasks = ["Study", "Exercise", "Shop"]
+    expected_text = "Study\nExercise\nShop\n"
 
-def test_remove_negative_number():
-    tasks = ["Task 1", "Task 2", "Task 3"]
+    # Act
+    save_tasks(tasks, test_file)
 
-    removed = remove_task_by_number(tasks, -1)
+    # Assert
+    assert test_file.read_text() == expected_text
 
-    assert removed is None
-    assert tasks == ["Task 1", "Task 2", "Task 3"]
+def test_load_tasks_reads_all_tasks(tmp_path):
+    # Arrange
+    test_file = tmp_path / "tasks.txt"
+    test_file.write_text("Study\nExercise\nShop\n")
+    expected_tasks = ["Study", "Exercise", "Shop"]
+
+    # Act
+    result = load_tasks(test_file)
+
+    # Assert
+    assert result == expected_tasks
+
+def test_load_tasks_ignores_blank_lines(tmp_path):
+    # Arrange
+    test_file = tmp_path / "tasks.txt"
+    test_file.write_text("Study\n\nExercise\nShop\n")
+    expected_tasks = ["Study", "Exercise", "Shop"]
+
+    # Act
+    result = load_tasks(test_file)
+
+    # Assert
+    assert result == expected_tasks
+
+def test_load_tasks_returns_empty_list_when_file_missing(tmp_path):
+    # Arrange
+    test_file = tmp_path / "missing_tasks.txt"
+
+    # Act
+    result = load_tasks(test_file)
+
+    # Assert
+    assert result == []
+
+def test_save_and_load_tasks_round_trip(tmp_path):
+    # Arrange
+    test_file = tmp_path / "tasks.txt"
+    tasks = ["Read", "Study", "Practice"]
+
+    # Act
+    save_tasks(tasks, test_file)
+    result = load_tasks(test_file)
+
+    # Assert
+    assert result == tasks
